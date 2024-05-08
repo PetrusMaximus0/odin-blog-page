@@ -1,4 +1,6 @@
-import Root from './root';
+import Root from './components/root';
+import { Outlet } from 'react-router-dom';
+
 //
 export default [
 	{
@@ -6,19 +8,30 @@ export default [
 		element: <Root />,
 		errorElement: <h1>Error Page!</h1>,
 		children: [
-			{ index: true, element: <h1> This is the Index </h1> },
 			{
-				path: '/post/:id',
-				element: <h1> This is a post with an ID </h1>,
+				path: '/',
+				element: (
+					<>
+						<Outlet />
+						<aside> This is the aside content</aside>
+					</>
+				),
+				children: [
+					{
+						path: '/',
+						element: <main>This is the Main Content</main>,
+					},
+					{
+						path: '/post/:id',
+						element: <main>Post with ID</main>,
+					},
+				],
+			},
+
+			{
+				path: '/list/:type/:query',
+				element: <h1>List of blogposts by query type and query</h1>,
 			},
 		],
-	},
-	{
-		path: '/category/:id',
-		element: <h1> List of posts by category </h1>,
-	},
-	{
-		path: '/archive/:date',
-		element: <h1> List of blogposts in this year, includes current year </h1>,
 	},
 ];

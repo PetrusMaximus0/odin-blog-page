@@ -4,10 +4,7 @@ export default function Root() {
 	return (
 		<>
 			<header> HEADER </header>
-			<main>
-				<Outlet />
-			</main>
-			<aside> ASIDE </aside>
+			<Outlet />
 			<footer> FOOTER </footer>
 		</>
 	);
