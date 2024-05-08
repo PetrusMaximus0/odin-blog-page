@@ -1,6 +1,6 @@
 import Root from './components/root';
 import Content from './components/content';
-import Post from './components/post';
+import BlogPost from './components/blogPost';
 import Catalog from './components/catalog';
 import ErrorPage from './components/errorPage';
 import QueryCatalog from './components/queryCatalog';
@@ -22,7 +22,7 @@ export default [
 					},
 					{
 						path: '/post/:id',
-						element: <Post />,
+						element: <BlogPost />,
 					},
 				],
 			},

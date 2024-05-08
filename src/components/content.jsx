@@ -5,12 +5,12 @@ import PropTypes from 'prop-types';
 //
 export default function Content({ renderAside = true }) {
 	return (
-		<div className="grid grid-rows-2 gap-x-2 md:grid-rows-1 md:grid-cols-[1fr_minmax(auto,_320px)]">
-			<main className="">
+		<div className="grid grid-rows-[auto_auto] gap-8 lg:grid-rows-1 lg:grid-cols-[1fr_minmax(auto,_320px)]">
+			<main>
 				<Outlet />
 			</main>
 			{renderAside && (
-				<aside className="">
+				<aside>
 					<SideBar />
 				</aside>
 			)}
@@ -19,5 +19,5 @@ export default function Content({ renderAside = true }) {
 }
 
 Content.propTypes = {
-	renderAside: PropTypes.bool.isRequired,
+	renderAside: PropTypes.bool,
 };

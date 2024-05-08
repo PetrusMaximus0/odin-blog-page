@@ -3,13 +3,13 @@ import { mdiMagnify, mdiCogOutline, mdiArchiveCogOutline } from '@mdi/js';
 import { Link } from 'react-router-dom';
 function SideBar() {
 	return (
-		<div className="flex flex-col gap-4">
+		<div className="flex flex-col gap-4 items-center md:items-stretch">
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
 					console.log('Submitted!');
 				}}
-				className="flex h-fit text-slate-900"
+				className="flex h-fit text-slate-900 justify-center"
 				action=""
 				id="search"
 				name="search"
@@ -35,20 +35,26 @@ function SideBar() {
 			<section>
 				<h1 className="text-2xl font-bold mb-2">Categories</h1>
 				<ul className="flex flex-col gap-1">
-					{
-						<li className="flex items-center justify-start gap-1 hover:text-blue-600 text-blue-300">
-							<Icon path={mdiCogOutline} size={0.9} />
-							<Link to="/">Category(1)</Link>
-						</li>
-					}
+					<li className="flex items-center justify-start gap-1 hover:text-blue-600 text-blue-300">
+						<Icon
+							className="text-blue-100"
+							path={mdiCogOutline}
+							size={0.9}
+						/>
+						<Link to="list/category/techiestuff">Category(1)</Link>
+					</li>
 				</ul>
 			</section>
 			<section>
 				<h1 className="text-2xl font-bold mb-2">Archives</h1>
 				<ul className="flex flex-col gap-1">
 					<li className="flex items-center justify-start gap-1 hover:text-blue-600 text-blue-300">
-						<Icon path={mdiArchiveCogOutline} size={0.9} />
-						<Link to="/">20XX(1)</Link>
+						<Icon
+							className="text-blue-100"
+							path={mdiArchiveCogOutline}
+							size={0.9}
+						/>
+						<Link to="list/date/intheyear2000">20XX(1)</Link>
 					</li>
 				</ul>
 			</section>
