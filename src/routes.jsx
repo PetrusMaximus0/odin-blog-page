@@ -1,12 +1,16 @@
 import Root from './components/root';
 import Content from './components/content';
+import Post from './components/post';
+import Catalog from './components/catalog';
+import ErrorPage from './components/errorPage';
+import QueryCatalog from './components/queryCatalog';
 
 //
 export default [
 	{
 		path: '/',
 		element: <Root />,
-		errorElement: <h1>Error Page!</h1>,
+		errorElement: <ErrorPage />,
 		children: [
 			{
 				path: '/',
@@ -14,18 +18,18 @@ export default [
 				children: [
 					{
 						path: '/',
-						element: <main>This is the Main Content</main>,
+						element: <Catalog />,
 					},
 					{
 						path: '/post/:id',
-						element: <main>Post with ID</main>,
+						element: <Post />,
 					},
 				],
 			},
 
 			{
 				path: '/list/:type/:query',
-				element: <h1>List of blogposts by query type and query</h1>,
+				element: <QueryCatalog />,
 			},
 		],
 	},
