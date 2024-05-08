@@ -1,5 +1,5 @@
 import Root from './components/root';
-import { Outlet } from 'react-router-dom';
+import Content from './components/content';
 
 //
 export default [
@@ -10,12 +10,7 @@ export default [
 		children: [
 			{
 				path: '/',
-				element: (
-					<>
-						<Outlet />
-						<aside> This is the aside content</aside>
-					</>
-				),
+				element: <Content />,
 				children: [
 					{
 						path: '/',
