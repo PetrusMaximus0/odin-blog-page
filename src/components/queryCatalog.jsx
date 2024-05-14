@@ -1,25 +1,18 @@
 import { useParams } from 'react-router-dom';
 import Catalog from './catalog';
-import PropTypes from 'prop-types';
 
-export default function QueryCatalog({ queryType }) {
-	const { query } = useParams();
-	console.log(query, queryType);
+export default function QueryCatalog() {
+	const { queryType: queryType, query: query, name: name } = useParams();
 	return (
-		<main>
+		<div>
 			{(queryType === 'search' && (
 				<h1 className="text-5xl mb-8">{`Search results for: "${query}"`}</h1>
 			)) || (
 				<h1 className="text-5xl mb-8 ">
-					{' '}
-					<span className="capitalize">{queryType}: </span> {query}{' '}
+					<span className="capitalize">{queryType}: </span> {name || query}{' '}
 				</h1>
 			)}
 			<Catalog fromQuery={true} />
-		</main>
+		</div>
 	);
 }
-
-QueryCatalog.propTypes = {
-	queryType: PropTypes.string,
-};

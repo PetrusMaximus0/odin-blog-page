@@ -4,7 +4,6 @@ import BlogPost from './components/blogPost';
 import Catalog from './components/catalog';
 import ErrorPage from './components/errorPage';
 import QueryCatalog from './components/queryCatalog';
-import { defer } from 'react-router-dom';
 
 // A fetch request for the blogposts and the categories.
 const rootLoader = async () => {
@@ -23,7 +22,25 @@ const rootLoader = async () => {
 			return res.json();
 		})
 		.then((res) => {
-			return res;
+			const archives = [];
+			res.posts.forEach((post) => {
+				const index = archives.findIndex(
+					(element) => element.date === new Date(post.date).getFullYear()
+				);
+				if (index === -1) {
+					archives.push({
+						date: new Date(post.date).getFullYear(),
+						number: 1,
+					});
+				} else {
+					archives[index].number += 1;
+				}
+			});
+
+			return {
+				categories: res.categories,
+				archives: archives.sort((a, b) => b.date - a.date),
+			};
 		})
 		.catch((error) => console.error(error));
 
@@ -31,32 +48,69 @@ const rootLoader = async () => {
 };
 
 const catalogLoader = async ({ params }) => {
-	if (isNaN(params.pageNumber)) {
-		params = { pageNumber: 1 };
+	//
+	if (!params.itemNumber) {
+		params.itemNumber = 3;
 	}
-	return defer({
-		posts: await fetch(
-			`http://localhost:3000/posts?page=${params.pageNumber}`,
-			{
-				mode: 'cors',
-				type: 'GET',
-				headers: {
-					'content-type': 'application/json',
-				},
+
+	//
+	if (!params.pageNumber || isNaN(params.pageNumber)) {
+		params.pageNumber = 1;
+	}
+
+	const baseUrl = `http://localhost:3000/posts?page=${params.pageNumber}&items=${params.itemNumber}`;
+	let url = baseUrl;
+
+	//
+	if (params.queryType) {
+		url += `&queryType=${params.queryType}&query=${params.query}`;
+	}
+
+	//
+	const posts = await fetch(url, {
+		mode: 'cors',
+		type: 'GET',
+		headers: {
+			'content-type': 'application/json',
+		},
+	})
+		.then((res) => {
+			if (res.status >= 400) {
+				throw new Error('Server error with status', res.status);
 			}
-		)
-			.then((res) => {
-				if (res.status >= 400) {
-					throw new Error('Server error with status', res.status);
-				}
-				return res.json();
-			})
-			.then((res) => {
-				return res;
-			})
-			.catch((error) => console.error(error)),
-		page: await params.pageNumber,
-	});
+			return res.json();
+		})
+		.then((res) => {
+			return res;
+		})
+		.catch((error) => console.error(error));
+
+	return {
+		posts: posts.allPosts,
+		page: params.pageNumber,
+		lastPage: posts.lastPage,
+		queryName: params.name ? params.name : '',
+	};
+};
+
+const blogpostLoader = async ({ params }) => {
+	return fetch(`http://localhost:3000/posts/${params.id}`, {
+		method: 'GET',
+		mode: 'cors',
+		headers: {
+			'content-type': 'application/json',
+		},
+	})
+		.then((res) => {
+			if (res.status >= 400) {
+				throw new Error('Server error with status: ', res.status);
+			}
+			return res.json();
+		})
+		.then((res) => res)
+		.catch((error) => {
+			console.error(error);
+		});
 };
 
 //
@@ -68,41 +122,35 @@ export default [
 		children: [
 			{
 				path: '/',
-				loader: rootLoader, //this needs the aside content, that means the short list.
+				loader: rootLoader,
 				element: <Content />,
 				children: [
 					{
 						path: '/',
-						loader: catalogLoader, //This needs 6 blog post cards.
+						loader: catalogLoader,
 						element: <Catalog />,
 					},
 					{
 						path: '/page/:pageNumber',
-						loader: catalogLoader, //This needs 6 blog post cards.
+						loader: catalogLoader,
 						element: <Catalog />,
 					},
 					{
 						path: '/post/:id',
+						loader: blogpostLoader,
 						element: <BlogPost />,
 					},
+					{
+						path: ':queryType/:query/:name/page/:pageNumber/',
+						loader: catalogLoader,
+						element: <QueryCatalog />,
+					},
+					{
+						path: ':queryType/:query/page/:pageNumber/',
+						loader: catalogLoader,
+						element: <QueryCatalog />,
+					},
 				],
-			},
-
-			{
-				path: '/year/:query',
-				element: <QueryCatalog queryType={'year'} />,
-			},
-			{
-				path: '/category/:query',
-				element: <QueryCatalog queryType={'category'} />,
-			},
-			{
-				path: '/search/:query',
-				element: <QueryCatalog queryType={'search'} />,
-			},
-			{
-				path: '/author/:query',
-				element: <QueryCatalog queryType={'author'} />,
 			},
 		],
 	},

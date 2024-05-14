@@ -5,30 +5,15 @@ import PropTypes from 'prop-types';
 
 function SideBar() {
 	//
-	const { posts, categories } = useLoaderData();
-
-	//
-	const archive = [];
-	posts.forEach((post) => {
-		// Create the archives object
-		const fullYearDate = new Date(post.date).getFullYear();
-		const index = archive.findIndex(
-			(element) => element.date === fullYearDate
-		);
-		if (index === -1) {
-			archive.push({ date: fullYearDate, number: 1 });
-		} else {
-			archive[index].number += 1;
-		}
-	});
-	archive.sort((a, b) => b.date - a.date);
-
+	const { categories, archives } = useLoaderData();
 	//
 	const navigate = useNavigate();
 	const handleSearchFormSubmit = (e) => {
-		// redirect to the queryCatalog with the query
 		e.preventDefault();
-		navigate(`search/${e.target.query.value}`);
+		// redirect to the queryCatalog with the query
+
+		navigate(`search/${e.target.query.value.replace(/\W+/g, ' ')}/page/1`);
+		e.target.query.value = '';
 	};
 
 	return (
@@ -73,7 +58,7 @@ function SideBar() {
 								size={0.9}
 							/>
 							<Link
-								to={`category/${category.name}`}
+								to={`/categories/${category._id}/${category.name}/page/1`}
 							>{`${category.name} (${category.posts.length})`}</Link>
 						</li>
 					))}
@@ -82,7 +67,7 @@ function SideBar() {
 			<section>
 				<h1 className="text-2xl font-bold mb-2">Archives</h1>
 				<ul className="flex flex-col gap-1">
-					{archive.map((element) => (
+					{archives.map((element) => (
 						<li
 							key={element.date}
 							className="flex items-center justify-start gap-1 hover:text-blue-600 text-blue-300"
@@ -93,7 +78,7 @@ function SideBar() {
 								size={0.9}
 							/>
 							<Link
-								to={`/year/${element.date}`}
+								to={`date/${element.date}/page/1/`}
 							>{`${element.date} (${element.number})`}</Link>
 						</li>
 					))}
