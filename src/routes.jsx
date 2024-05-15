@@ -10,7 +10,7 @@ const rootLoader = async () => {
 	//
 	return fetch('http://localhost:3000/posts/shortlist', {
 		mode: 'cors',
-		type: 'GET',
+		method: 'GET',
 		headers: {
 			'content-type': 'application/json',
 		},
