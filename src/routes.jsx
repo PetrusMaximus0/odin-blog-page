@@ -4,11 +4,13 @@ import BlogPost from './components/blogPost';
 import Catalog from './components/catalog';
 import ErrorPage from './components/errorPage';
 import QueryCatalog from './components/queryCatalog';
+import { apiBaseURL } from './config';
 
 // A fetch request for the blogposts and the categories.
 const rootLoader = async () => {
 	//
-	return fetch('http://localhost:3000/posts/shortlist', {
+	const url = `${apiBaseURL}/posts/shortlist`;
+	return fetch(url, {
 		mode: 'cors',
 		method: 'GET',
 		headers: {
@@ -37,6 +39,7 @@ const rootLoader = async () => {
 				}
 			});
 
+			console.log(archives);
 			return {
 				categories: res.categories,
 				archives: archives.sort((a, b) => b.date - a.date),
@@ -58,7 +61,7 @@ const catalogLoader = async ({ params }) => {
 		params.pageNumber = 1;
 	}
 
-	const baseUrl = `http://localhost:3000/posts?page=${params.pageNumber}&items=${params.itemNumber}`;
+	const baseUrl = `${apiBaseURL}/posts?page=${params.pageNumber}&items=${params.itemNumber}`;
 	let url = baseUrl;
 
 	//
@@ -85,6 +88,7 @@ const catalogLoader = async ({ params }) => {
 		})
 		.catch((error) => console.error(error));
 
+	console.log(posts);
 	return {
 		posts: posts.allPosts,
 		page: params.pageNumber,
@@ -94,7 +98,7 @@ const catalogLoader = async ({ params }) => {
 };
 
 const blogpostLoader = async ({ params }) => {
-	return fetch(`http://localhost:3000/posts/${params.id}`, {
+	return fetch(`${apiBaseURL}/posts/${params.id}`, {
 		method: 'GET',
 		mode: 'cors',
 		headers: {

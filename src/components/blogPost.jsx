@@ -1,32 +1,34 @@
-import { Link, useLoaderData } from 'react-router-dom';
+import { useNavigate, Link, useLoaderData } from 'react-router-dom';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { apiBaseURL } from '../config';
 
 export default function BlogPost() {
-	const data = useLoaderData();
+	const post = useLoaderData();
+
+	const navigate = useNavigate();
+
 	//
-	const [allComments, setAllComments] = useState(
-		data.comments.sort((a, b) => new Date(b.date) - new Date(a.date))
+	post.comments.sort(
+		(a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf()
 	);
+
 	//
 	const [postingComment, setPostingComment] = useState(false);
 	const [commentData, setCommentData] = useState({});
 	const [expandCommentInput, setExpandCommentInput] = useState(false);
 	const handleCommentInputChange = (e) => {
-		if (postingComment) return;
 		setCommentData({ author: commentData.author, text: e.target.value });
 	};
 	const handleAuthorInputChange = (e) => {
-		if (postingComment) return;
 		setCommentData({ author: e.target.value, text: commentData.text });
 	};
 	//
 	const handleCommentSubmit = (e) => {
-		if (postingComment) return;
 		e.preventDefault();
 		setPostingComment(true);
 		const payload = { author: commentData.author, text: commentData.text };
-		fetch(`http://localhost:3000/posts/${data._id}/comment`, {
+		fetch(`${apiBaseURL}/posts/${post._id}/comment`, {
 			mode: 'cors',
 			method: 'POST',
 			headers: {
@@ -49,27 +51,15 @@ export default function BlogPost() {
 				} else {
 					setExpandCommentInput(false);
 					setCommentData({ author: '', text: '' });
+					navigate(`/post/${post._id}`);
 				}
 			})
-			.catch((error) => console.error(error))
-			.finally(() => {
-				console.log(payload);
-				setPostingComment(false);
-				setAllComments(
-					[
-						...allComments,
-						{
-							author: payload.author || 'Anonymous User',
-							text: payload.text,
-							date: new Date(),
-						},
-					].sort((a, b) => new Date(b.date) - new Date(a.date))
-				);
+			.catch((error) => {
+				console.error(error);
 			});
 	};
 	//
 	const handleCommentCancel = () => {
-		if (postingComment) return;
 		setExpandCommentInput(false);
 		setCommentData({ author: '', text: '' });
 	};
@@ -80,28 +70,28 @@ export default function BlogPost() {
 				<figure className="max-w-full">
 					<img
 						className="object-cover w-full 2xl:max-h-96 max-h-64"
-						src={data.headerImage}
+						src={post.headerImage}
 						alt="Post Image"
 					/>
 				</figure>
-				<h1 className="text-5xl font-semibold">{data.title}</h1>
+				<h1 className="text-5xl font-semibold">{post.title}</h1>
 				<p className="italic">
 					Posted in{' '}
 					<span className="font-bold">
-						{new Date(data.date).toLocaleString()}
+						{new Date(post.date).toLocaleString()}
 					</span>{' '}
 					by{' '}
 					<Link
-						to={`/author/${data.author}/page/1`}
+						to={`/author/${post.author}/page/1`}
 						className="text-blue-300 hover:text-blue-500"
 					>
-						{data.author}
+						{post.author}
 					</Link>
 				</p>
 				<p className="italic font-semibold mb-6">
-					{data.timeToRead} min read
+					{post.timeToRead} min read
 				</p>
-				<p>{data.text}</p>
+				<p>{post.text}</p>
 			</article>
 			<form
 				onSubmit={handleCommentSubmit}
@@ -159,9 +149,9 @@ export default function BlogPost() {
 					</button>
 				</div>
 			</form>
-			{data.comments.length > 0 && (
+			{post.comments.length > 0 && (
 				<ul className="flex flex-col justify-start gap-5">
-					{allComments.map((comment) => {
+					{post.comments.map((comment) => {
 						return (
 							<li className="flex flex-col" key={comment._id}>
 								<header className="flex items-center justify-between text-sm">
