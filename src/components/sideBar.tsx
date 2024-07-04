@@ -2,18 +2,19 @@ import Icon from '@mdi/react';
 import { mdiMagnify, mdiCogOutline, mdiArchiveCogOutline } from '@mdi/js';
 import { Link, useNavigate, useLoaderData } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { IRootResponse } from '../interfaces';
+import { FormEvent } from 'react';
 
 function SideBar() {
-	//
-	const { categories, archives } = useLoaderData();
+	const { categories, archives } = useLoaderData() as IRootResponse;
+	
 	//
 	const navigate = useNavigate();
-	const handleSearchFormSubmit = (e) => {
+	const handleSearchFormSubmit = (e : FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		// redirect to the queryCatalog with the query
-
-		navigate(`search/${e.target.query.value.replace(/\W+/g, ' ')}/page/1`);
-		e.target.query.value = '';
+		navigate(`search/${e.currentTarget.query.value.replace(/\W+/g, ' ')}/page/1`);
+		e.currentTarget.query.value = '';
 	};
 
 	return (

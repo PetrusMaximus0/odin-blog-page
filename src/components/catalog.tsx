@@ -1,19 +1,23 @@
-import { Link, useLoaderData, useNavigation } from 'react-router-dom';
-import BlogCard from './blogCard';
 import Icon from '@mdi/react';
-import { mdiArrowLeft, mdiArrowRight } from '@mdi/js';
-import PropTypes from 'prop-types';
 import { useEffect } from 'react';
+import { mdiArrowLeft, mdiArrowRight } from '@mdi/js';
+import { Link, useLoaderData, useNavigation } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { ICatalogResponse } from '../interfaces';
+import BlogCard from './blogCard';
 
 export default function Catalog({ fromQuery = false }) {
-	const { posts, page, lastPage } = useLoaderData();
+
+	const { posts, page, lastPage } = useLoaderData() as ICatalogResponse;
 	const { state } = useNavigation();
+
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, [posts]);
+
 	return (
-		(posts.length > 0 && state !== 'loading' && (
-			<section className="">
+		(posts.length > 0 && (
+			<section>
 				<ul
 					className={
 						fromQuery
@@ -21,16 +25,16 @@ export default function Catalog({ fromQuery = false }) {
 							: 'flex flex-col gap-8'
 					}
 				>
-					{posts.map((blog) => {
-						return (
+					{
+						posts.map((blog) =>
 							<li key={blog._id} className="">
 								<BlogCard data={blog} />
-							</li>
-						);
-					})}
+							</li>)
+					}
 				</ul>
-
-				{(state !== 'loading' && (
+				{
+					state === "loading" && <p className="mt-12 text-center text-lg"> Loading Page... </p>
+					||
 					<div className="flex justify-around gap-4 mt-12">
 						<Link
 							className={
@@ -41,13 +45,14 @@ export default function Catalog({ fromQuery = false }) {
 							to={
 								fromQuery
 									? new URL('.', window.origin + location.pathname)
-											.href + `${parseInt(page) - 1}`
-									: `/page/${parseInt(page) - 1}`
+										.href + `${page - 1}`
+									: `/page/${page - 1}`
 							}
 						>
 							<Icon path={mdiArrowLeft} size={1} />
 							Earlier Posts
 						</Link>
+							
 						<Link
 							className={
 								lastPage
@@ -57,19 +62,24 @@ export default function Catalog({ fromQuery = false }) {
 							to={
 								fromQuery
 									? new URL('.', window.origin + location.pathname)
-											.href + `${parseInt(page) + 1}`
-									: `/page/${parseInt(page) + 1}`
+										.href + `${page + 1}`
+									: `/page/${page + 1}`
 							}
 						>
 							Older Posts <Icon path={mdiArrowRight} size={1} />
 						</Link>
-					</div>
-				)) || <p className="mt-12 text-center text-lg">Loading Page...</p>}
+							
+					</div>					
+				}
 			</section>
-		)) || <p className="text-center text-xl">No results found.</p>
+
+		)) || <p className="text-center text-xl"> No results found. </p>
 	);
 }
 
 Catalog.propTypes = {
 	fromQuery: PropTypes.bool,
 };
+
+
+

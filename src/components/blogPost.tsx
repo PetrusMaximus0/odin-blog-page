@@ -1,10 +1,11 @@
 import { useNavigate, Link, useLoaderData } from 'react-router-dom';
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import PropTypes from 'prop-types';
 import { apiBaseURL } from '../config';
+import {IPost, ICommentFormData } from '../interfaces';
 
 export default function BlogPost() {
-	const post = useLoaderData();
+	const post = useLoaderData() as IPost;
 
 	const navigate = useNavigate();
 
@@ -15,16 +16,21 @@ export default function BlogPost() {
 
 	//
 	const [postingComment, setPostingComment] = useState(false);
-	const [commentData, setCommentData] = useState({});
+	const [commentData, setCommentData] = useState<ICommentFormData>({});
 	const [expandCommentInput, setExpandCommentInput] = useState(false);
-	const handleCommentInputChange = (e) => {
-		setCommentData({ author: commentData.author, text: e.target.value });
-	};
-	const handleAuthorInputChange = (e) => {
-		setCommentData({ author: e.target.value, text: commentData.text });
-	};
+
 	//
-	const handleCommentSubmit = (e) => {
+	const handleCommentInputChange = (e : ChangeEvent<HTMLTextAreaElement>) => {
+		setCommentData({ author: commentData.author, text: e.currentTarget.value });
+	};
+
+	//
+	const handleAuthorInputChange = (e : ChangeEvent<HTMLInputElement>) => {
+		setCommentData({ author: e.currentTarget.value, text: commentData.text });
+	};
+
+	//
+	const handleCommentSubmit = (e : FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setPostingComment(true);
 		const payload = { author: commentData.author, text: commentData.text };
@@ -38,7 +44,7 @@ export default function BlogPost() {
 		})
 			.then((res) => {
 				if (res.status >= 400) {
-					throw new Error('Error with status: ', res.status);
+					throw new Error(`Error with status: ${res.status}`);
 				}
 				return res.json();
 			})
@@ -58,6 +64,7 @@ export default function BlogPost() {
 				console.error(error);
 			});
 	};
+
 	//
 	const handleCommentCancel = () => {
 		setExpandCommentInput(false);
@@ -106,8 +113,8 @@ export default function BlogPost() {
 					className="resize-none bg-slate-900 rounded"
 					name="message"
 					id="message"
-					cols="30"
-					rows={expandCommentInput ? '4' : '1'}
+					cols={30}
+					rows={expandCommentInput ? 4 : 1}
 					onFocus={() => setExpandCommentInput(true)}
 					maxLength={300}
 					onChange={handleCommentInputChange}
