@@ -2,8 +2,9 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Icon from '@mdi/react';
 import { mdiChatOutline } from '@mdi/js';
+import { IPost } from '../interfaces';
 
-export default function BlogCard({ data }) {
+export default function BlogCard({ data } : { data : IPost }) {
 	return (
 		<div className="flex flex-col gap-4">
 			<figure className="max-w-full">

@@ -2,9 +2,12 @@ import { useParams } from 'react-router-dom';
 import Catalog from './catalog';
 
 export default function QueryCatalog() {
-	const { queryType: queryType, query: query, name: name } = useParams();
+	//
+	const { queryType, query, name } = useParams();
+
+	//
 	return (
-		<div>
+		<>
 			{(queryType === 'search' && (
 				<h1 className="text-5xl mb-8">{`Search results for: "${query}"`}</h1>
 			)) || (
@@ -13,6 +16,6 @@ export default function QueryCatalog() {
 				</h1>
 			)}
 			<Catalog fromQuery={true} />
-		</div>
+		</>
 	);
 }
