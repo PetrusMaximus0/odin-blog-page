@@ -1,15 +1,19 @@
 import { apiBaseURL } from '../config';
 import { ICatalogLoaderParams, ICatalogResponse } from '../interfaces';
 
-export const catalogLoader = async ({ params }: { params: ICatalogLoaderParams}) => {
+export const catalogLoader = async ({
+	params,
+}: {
+	params: ICatalogLoaderParams;
+}) => {
 	//
 	if (!params.itemNumber) {
-		params.itemNumber = 3;
+		params.itemNumber = '3';
 	}
 
 	//
-	if (!params.pageNumber || isNaN(params.pageNumber)) {
-		params.pageNumber = 1;
+	if (!params.pageNumber) {
+		params.pageNumber = '1';
 	}
 
 	const baseUrl = `${apiBaseURL}/posts?page=${params.pageNumber}&items=${params.itemNumber}`;
@@ -41,7 +45,7 @@ export const catalogLoader = async ({ params }: { params: ICatalogLoaderParams})
 
 	return {
 		posts: posts.allPosts,
-		page: params.pageNumber,
+		page: parseInt(params.pageNumber),
 		lastPage: posts.lastPage,
 		queryName: params.name ? params.name : '',
 	} as ICatalogResponse;
