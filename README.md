@@ -1,6 +1,6 @@
 # Blog API - User
 
-This is a user page solution for The Odin Project's [Blog API](https://www.theodinproject.com/lessons/nodejs-blog-api).
+This is a user page solution for The Odin Project's [Blog API](https://www.theodinproject.com/lessons/node-path-nodejs-blog-api).
 
 ## Live Demo
 [https://odin-blog-page.pages.dev/](https://odin-blog-page.pages.dev)
