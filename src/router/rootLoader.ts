@@ -5,7 +5,7 @@ import { apiBaseURL } from "../config";
 export const rootLoader = async () => {
 	//
 	const url = `${apiBaseURL}/posts/shortlist`;
-	return fetch(url, {
+	return await fetch(url, {
 		mode: 'cors',
 		method: 'GET',
 		headers: {
@@ -19,7 +19,6 @@ export const rootLoader = async () => {
 			return res.json();
 		})
 		.then((res) => {
-
 			const archives: IPostArchive[] = []				
 			res.posts.forEach((post: IPostArchive) => {
 				//
@@ -31,15 +30,12 @@ export const rootLoader = async () => {
 				} else {
 					archives[index].number += 1;
 				}
-
 			});
-
 			return {
 				categories: res.categories,
 				archives: archives.sort((a, b) => b.date - a.date),
 			} as IRootResponse;
 		})
 		.catch((error) => console.error(error));
-
 	//
 };
